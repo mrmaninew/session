@@ -10,17 +10,21 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true
 }));
+app.use(express.static(__dirname + '/client'));
 app.set('x-powered-by', false);
 
 // connect MongoDB
 config.connectDB();
 
 app.get('/', function(req, res) {
+    res.status(200).sendFile(__dirname + '/client/index.html');
+});
+
+app.get('/allUsers', function(req, res) {
     User.find({}, function(err, docs) {
         if (err) {
             console.error(err);
         } else {
-            console.log(docs);
             res.send(docs);
         }
     });
@@ -28,7 +32,6 @@ app.get('/', function(req, res) {
 
 app.post('/newUser', function(req, res) {
     var data = req.body;
-    console.log(data);
     var user = new User();
     user.name = data.name; // req.body.name
     user.age = data.age // req.body.age 
@@ -64,9 +67,10 @@ app.put('/updateUser/:name', function(req, res) {
     });
 });
 
-app.delete('/delUser/:name', function(req, res) {
+app.delete('/delUser/:id', function(req, res) {
+    console.log(req.params.id);
     User.remove({
-        name: req.params.name
+        _id: req.params.id
     }, function(err, result) {
         if (err) {
             console.error(err);
