@@ -45,15 +45,11 @@ app.post('/newUser', function(req, res) {
     });
 });
 
-app.put('/updateUser/:name', function(req, res) {
-    var param = req.params.name;
-    var body = req.body;
-    // name: mani
-    User.findOneAndUpdate({
-        name: param
-    }, {
+app.put('/updateUser/:id', function(req, res) {
+    User.findByIdAndUpdate(req.params.id, {
         $set: {
-            age: body.age
+            name: req.body.name,
+            age: req.body.age
         }
     }, {
         new: true
